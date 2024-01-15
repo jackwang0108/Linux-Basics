@@ -15,3 +15,8 @@ add_executable(
     dir
     "./linux-basics/dir.cpp"
 )
+
+add_executable(
+    error
+    "./linux-basics/error.cpp"
+)
