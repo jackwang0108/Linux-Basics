@@ -6,22 +6,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
-add_executable(
-    time
-    "./linux-basics/time.cpp"
-)
+set(SOURCE_FOLDERS "linux-basics/*.cpp" "linux-signal/*.cpp")
 
-add_executable(
-    dir
-    "./linux-basics/dir.cpp"
-)
+# 添加模式匹配的源文件
+file(GLOB SOURCES ${SOURCE_FOLDERS})
 
-add_executable(
-    error
-    "./linux-basics/error.cpp"
-)
-
-add_executable(
-    more-dir
-    "./linux-basics/more-dir.cpp"
-)
+# 遍历源文件列表，为每个源文件添加add_executable
+foreach(SOURCE ${SOURCES})
+    get_filename_component(EXECUTABLE_NAME ${SOURCE} NAME_WE)
+    add_executable(${EXECUTABLE_NAME} ${SOURCE})
+endforeach()
