@@ -20,3 +20,8 @@ add_executable(
     error
     "./linux-basics/error.cpp"
 )
+
+add_executable(
+    more-dir
+    "./linux-basics/more-dir.cpp"
+)
