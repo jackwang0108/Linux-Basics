@@ -49,7 +49,10 @@ public:
     bool push(const T &val)
     {
         if (full())
+        {
+            std::cout << "队列已满, 入队失败!" << std::endl;
             return false;
+        }
 
         tail = (tail + 1) % maxLength;
         data[tail] = val;
