@@ -32,7 +32,18 @@ private:
 public:
     Semaphore() : semID(-1) {}
     ~Semaphore() {}
-    bool init(key_t key, unsigned short value = 1, short semflag = SEM_UNDO)
+
+    /**
+     * @brief init初始化信号量
+     *
+     * @param key 信号量在内核维护的表中的key
+     * @param value 信号量的初值
+     * @param semflag 信号量的flag, 如果为SEM_UNDO则为互斥锁, 0则为信号量
+     * @return true 初始化成功
+     * @return false 初始化失败
+     */
+    bool
+    init(key_t key, unsigned short value = 1, short semflag = SEM_UNDO)
     {
         // 如果信号量存在, 则获取信号量; 如果信号量不存在, 则创建并初始化值为value
         if (semID != -1)
