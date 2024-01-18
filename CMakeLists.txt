@@ -20,7 +20,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
-set(SOURCE_FOLDERS FORCE "linux-basics/*.cpp" "linux-process/*.cpp")
+set(SOURCE_FOLDERS FORCE "linux-basics/*.cpp" "linux-process/*.cpp" "linux-socket/*.cpp")
 
 # 添加模式匹配的源文件
 file(GLOB SOURCES ${SOURCE_FOLDERS})
@@ -33,5 +33,5 @@ foreach(SOURCE ${SOURCES})
     get_filename_component(EXECUTABLE_NAME ${SOURCE} NAME_WE)
     add_executable(${EXECUTABLE_NAME} ${SOURCE})
     # target_link_libraries(${EXECUTABLE_NAME} PUBLIC CircularQueue)
-    target_include_directories(${EXECUTABLE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/linux-process)
+    target_include_directories(${EXECUTABLE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/linux-process ${PROJECT_SOURCE_DIR}/linux-socket)
 endforeach()
