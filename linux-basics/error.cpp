@@ -43,6 +43,7 @@ void testStrerror()
         sprintf(info, "Create dir %s failed", dir);
         perror(info);
     }
+    cout << 1;
 }
 
 int main(int argc, char *argv[])
