@@ -37,28 +37,25 @@ using std::string;
 // int atexit(void (*function)(void));
 // exit()调用终止函数的顺序与登记时相反。 进程退出前的收尾工作
 
-class A
-{
+class A {
 private:
-    string name;
+	string name;
 
 public:
-    A(const string &name) : name(name){};
-    ~A() { cout << "调用 " << name << "的析构函数" << endl; };
+	A(const string &name) : name(name){};
+	~A() { cout << "调用 " << name << "的析构函数" << endl; };
 };
 
-void print()
-{
-    cout << "In Exit" << endl;
+void print() {
+	cout << "In Exit" << endl;
 }
 
 A a1("A1");
 
-int main(int argc, char *argv[])
-{
-    A a2("A2");
-    atexit(print);
-    // return 0;
-    // exit(0);
-    _exit(0);
+int main(int argc, char *argv[]) {
+	A a2("A2");
+	atexit(print);
+	// return 0;
+	// exit(0);
+	_exit(0);
 }

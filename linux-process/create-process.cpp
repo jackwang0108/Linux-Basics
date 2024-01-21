@@ -18,10 +18,9 @@ using std::endl;
 // 每个进程都有一个非负整数表示的唯一的进程ID。虽然是唯一的，但是进程ID可以复用。当一个进程终止后，其进程ID就成了复用的候选者。Linux采用延迟复用算法，让新建进程的ID不同于最近终止的进程所使用的ID。这样防止了新进程被误认为是使用了同一ID的某个已终止的进程。
 // pid_t getpid(void);     // 获取当前进程的ID。
 // pid_t getppid(void);    // 获取父进程的ID。
-void testGetpid()
-{
-    cout << "Current PID: " << getpid() << endl;
-    cout << "Parent PID: " << getppid() << endl;
+void testGetpid() {
+	cout << "Current PID: " << getpid() << endl;
+	cout << "Parent PID: " << getppid() << endl;
 }
 
 // 三、fork()函数
@@ -34,40 +33,32 @@ void testGetpid()
 // 四、fork()的两种用法
 // 1）父进程复制自己，然后，父进程和子进程分别执行不同的代码。这种用法在网络服务程序中很常见，父进程等待客户端的连接请求，当请求到达时，父进程调用fork()，让子进程处理些请求，而父进程则继续等待下一个连接请求。
 // 2）进程要执行另一个程序。这种用法在Shell中很常见，子进程从fork()返回后立即调用exec。
-void testFork()
-{
-    cout << "Before Fork" << endl;
-    pid_t pid = fork();
-    if (pid == 0)
-    {
-        cout << "子进程, PID=" << getpid() << endl;
-    }
-    else
-    {
-        cout << "父进程, PID=" << getpid() << ", 子进程 PID=" << pid << endl;
-        exit(0);
-    }
+void testFork() {
+	cout << "Before Fork" << endl;
+	pid_t pid = fork();
+	if (pid == 0) {
+		cout << "子进程, PID=" << getpid() << endl;
+	} else {
+		cout << "父进程, PID=" << getpid() << ", 子进程 PID=" << pid << endl;
+		exit(0);
+	}
 }
 
 // fork()的一个特性是在父进程中打开的文件描述符都会被复制到子进程中，父进程和子进程共享同一个文件偏移量。
 // 如果父进程和子进程写同一描述符指向的文件，但又没有任何形式的同步，那么它们的输出可能会相互混合。
-void testForkWrite()
-{
-    std::ofstream outputFile("file.txt");
-    pid_t childPID = fork();
-    if (childPID == 0)
-    {
-        sleep(1);
-        for (int i = 0; i < 100; i++)
-            outputFile << "Written by child, PID: " << getpid() << ", idx: " << i << endl;
-        exit(0);
-    }
-    else
-    {
-        sleep(1);
-        for (int i = 0; i < 100; i++)
-            outputFile << "Written by parent, PID: " << getpid() << ", idx: " << i << endl;
-    }
+void testForkWrite() {
+	std::ofstream outputFile("file.txt");
+	pid_t childPID = fork();
+	if (childPID == 0) {
+		sleep(1);
+		for (int i = 0; i < 100; i++)
+			outputFile << "Written by child, PID: " << getpid() << ", idx: " << i << endl;
+		exit(0);
+	} else {
+		sleep(1);
+		for (int i = 0; i < 100; i++)
+			outputFile << "Written by parent, PID: " << getpid() << ", idx: " << i << endl;
+	}
 }
 
 // 六、vfork()函数
@@ -81,10 +72,9 @@ void testForkWrite()
 // }
 // With most current kernels, however, including Linux, the primary benefit of vfork has disappeared because of the way fork is implemented. Rather than copying the whole image when fork is executed, copy-on-write techniques are used.
 
-int main(int argc, char *argv[])
-{
-    testGetpid();
-    testFork();
-    testForkWrite();
-    return 0;
+int main(int argc, char *argv[]) {
+	testGetpid();
+	testFork();
+	testForkWrite();
+	return 0;
 }

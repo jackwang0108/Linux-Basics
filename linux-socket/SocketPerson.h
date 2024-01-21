@@ -2,8 +2,7 @@
 
 #include <string>
 
-struct Person
-{
-    int id;
-    std::string name;
+struct Person {
+	int id;
+	std::string name;
 };

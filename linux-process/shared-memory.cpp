@@ -1,10 +1,10 @@
-#include <string>
 #include <cstring>
 #include <iostream>
+#include <string>
 
-#include <unistd.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <unistd.h>
 
 using std::cout;
 using std::endl;
@@ -17,16 +17,14 @@ using std::string;
 // Linux中提供了一组函数用于操作共享内存。
 
 // = 注意, 共享内存不要使用STL中的容器, 因为容器会在当前进程的堆中动态分配内存, 因此无法在多个进程间共用
-struct Person
-{
-    int no;
-    char name[51];
+struct Person {
+	int no;
+	char name[51];
 };
 
-std::ostream &operator<<(std::ostream &os, const Person &p)
-{
-    os << "Person No=" << p.no << ", name=" << p.name;
-    return os;
+std::ostream &operator<<(std::ostream &os, const Person &p) {
+	os << "Person No=" << p.no << ", name=" << p.name;
+	return os;
 }
 
 // 一、shmget函数
@@ -61,36 +59,34 @@ std::ostream &operator<<(std::ostream &os, const Person &p)
 //      buf			操作共享内存的数据结构的地址，如果要删除共享内存，填0。
 // 调用成功时返回0，失败时返回-1。
 // 注意，用root创建的共享内存，不管创建的权限是什么，普通用户无法删除。
-void testShmat(int shmID)
-{
+void testShmat(int shmID) {
 }
 
-int main(int argc, char *argv[])
-{
-    // 第一步: 申请共享内存
-    int shmID = shmget(0x5005, sizeof(Person), 0640 | IPC_CREAT);
-    if (shmID == -1)
-        perror("Get Shared Memory Fail!");
-    cout << "ShmID=" << shmID << endl;
+int main(int argc, char *argv[]) {
+	// 第一步: 申请共享内存
+	int shmID = shmget(0x5005, sizeof(Person), 0640 | IPC_CREAT);
+	if (shmID == -1)
+		perror("Get Shared Memory Fail!");
+	cout << "ShmID=" << shmID << endl;
 
-    // 第二步: 链接到共享内存
-    Person *personPtr = (Person *)shmat(shmID, 0, 0);
-    if (personPtr == (void *)-1)
-        perror("Shmat() failed!");
+	// 第二步: 链接到共享内存
+	Person *personPtr = (Person *) shmat(shmID, 0, 0);
+	if (personPtr == (void *) -1)
+		perror("Shmat() failed!");
 
-    // 第三步: 使用共享内存, 对共享内存进行读写
-    cout << "原值: " << *personPtr << endl;
-    personPtr->no = 51;
-    strcpy(personPtr->name, "Jack Wang");
-    cout << "新值: " << *personPtr << endl;
+	// 第三步: 使用共享内存, 对共享内存进行读写
+	cout << "原值: " << *personPtr << endl;
+	personPtr->no = 51;
+	strcpy(personPtr->name, "Jack Wang");
+	cout << "新值: " << *personPtr << endl;
 
-    // 第四步: 共享内存从当前进程中分离
-    if (shmdt(personPtr) == -1)
-        perror("Shmdt() failed!");
+	// 第四步: 共享内存从当前进程中分离
+	if (shmdt(personPtr) == -1)
+		perror("Shmdt() failed!");
 
-    // 第五步: 所有进程结束后, 删除共享内存
-    if (shmctl(shmID, IPC_RMID, 0) == -1)
-        perror("Remove Shared Memory Failed!");
+	// 第五步: 所有进程结束后, 删除共享内存
+	if (shmctl(shmID, IPC_RMID, 0) == -1)
+		perror("Remove Shared Memory Failed!");
 
-    return 0;
+	return 0;
 }

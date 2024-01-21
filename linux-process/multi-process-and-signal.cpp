@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 using std::cout;
 using std::endl;
@@ -25,67 +25,59 @@ void parentEXIT(int signal);
 // 子进程的信号处理函数
 void childEXIT(int signal);
 
-int main(int argc, char *argv[])
-{
-    // 忽略所有信号, 避免被打扰
-    for (int i = 0; i <= 64; i++)
-        signal(i, SIG_IGN);
+int main(int argc, char *argv[]) {
+	// 忽略所有信号, 避免被打扰
+	for (int i = 0; i <= 64; i++)
+		signal(i, SIG_IGN);
 
-    // 捕捉SIGTERM信号和SIGINT信号
-    signal(SIGINT, parentEXIT);
-    signal(SIGTERM, parentEXIT);
+	// 捕捉SIGTERM信号和SIGINT信号
+	signal(SIGINT, parentEXIT);
+	signal(SIGTERM, parentEXIT);
 
-    while (true)
-    {
-        if (fork() > 0)
-        {
-            cout << "父进程运行中" << endl;
-            sleep(5);
-        }
-        else
-        {
-            // 子进程重新设置信号
-            signal(SIGTERM, childEXIT);
-            signal(SIGINT, SIG_IGN);
-            while (true)
-            {
-                cout << "子进程运行中, PID=" << getpid() << endl;
-                sleep(1);
-            }
-        }
-    }
+	while (true) {
+		if (fork() > 0) {
+			cout << "父进程运行中" << endl;
+			sleep(5);
+		} else {
+			// 子进程重新设置信号
+			signal(SIGTERM, childEXIT);
+			signal(SIGINT, SIG_IGN);
+			while (true) {
+				cout << "子进程运行中, PID=" << getpid() << endl;
+				sleep(1);
+			}
+		}
+	}
 
-    return 0;
+	return 0;
 }
 
 // 父进程的信号处理函数
-void parentEXIT(int sig)
-{
-    // 防止信号处理过程中再次被中断
-    signal(SIGINT, SIG_IGN);
-    signal(SIGTERM, SIG_IGN);
+void parentEXIT(int sig) {
+	// 防止信号处理过程中再次被中断
+	signal(SIGINT, SIG_IGN);
+	signal(SIGTERM, SIG_IGN);
 
-    cout << "父进程退出, PID=" << getpid() << ", sig=" << sig << endl;
+	cout << "父进程退出, PID=" << getpid() << ", sig=" << sig << endl;
 
-    // 向所有的子进程发送SIGTERM指令, 通知他们退出
-    kill(0, SIGTERM);
+	// 向所有的子进程发送SIGTERM指令, 通知他们退出
+	kill(0, SIGTERM);
 
-    // 释放全局资源的代码
+	// 释放全局资源的代码
 
-    // 退出
-    exit(0);
+	// 退出
+	exit(0);
 }
 
-void childEXIT(int sig)
-{
-    // 避免再次被中断
-    signal(SIGINT, SIG_IGN);
-    signal(SIGTERM, SIG_IGN);
+void childEXIT(int sig) {
+	// 避免再次被中断
+	signal(SIGINT, SIG_IGN);
+	signal(SIGTERM, SIG_IGN);
 
-    cout << "子进程退出, PID=" << getpid() << ", sig=" << sig << endl;
+	cout << "子进程退出, PID=" << getpid() << ", sig=" << sig << endl;
 
-    // 释放子进程的资源
+	// 释放子进程的资源
 
-    // 退出
-    exit(0);
+	// 退出
+	exit(0);
 }

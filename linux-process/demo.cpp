@@ -38,12 +38,10 @@
 // E 信号不能被捕获。
 // F 信号不能被忽略。
 
-int main()
-{
-    while (true)
-    {
-        std::cout << "任务执行了一次" << std::endl;
-        sleep(1);
-    }
-    return 0;
+int main() {
+	while (true) {
+		std::cout << "任务执行了一次" << std::endl;
+		sleep(1);
+	}
+	return 0;
 }

@@ -1,6 +1,6 @@
-#include <string>
 #include <cstring>
 #include <iostream>
+#include <string>
 
 #include <errno.h>
 #include <sys/stat.h>
@@ -21,33 +21,30 @@ using std::endl;
 //      errno的值只有在库函数调用发生错误时才会被设置，当库函数调用成功时，errno的值不会被修改，不会主动的置为 0。
 //      在实际开发中，判断函数执行是否成功还得靠函数的返回值，只有在返回值是失败的情况下，才需要关注errno的值。
 
-void testStrerror()
-{
-    // strerror() 在<string.h>中声明，用于获取错误代码对应的详细信息。
-    //      char *strerror(int errnum);                       	// 非线程安全。
-    //      int strerror_r(int errnum, char *buf, size_t buflen);		// 线程安全。
-    // gcc8.3.1一共有133个错误代码。
-    for (int i = 0; i <= 133; i++)
-        cout << "errno: " << i << ", error string: " << strerror(i) << endl;
+void testStrerror() {
+	// strerror() 在<string.h>中声明，用于获取错误代码对应的详细信息。
+	//      char *strerror(int errnum);                       	// 非线程安全。
+	//      int strerror_r(int errnum, char *buf, size_t buflen);		// 线程安全。
+	// gcc8.3.1一共有133个错误代码。
+	for (int i = 0; i <= 133; i++)
+		cout << "errno: " << i << ", error string: " << strerror(i) << endl;
 
-    char dir[] = "Test";
-    for (int i = 0; i < 2; i++)
-        if (mkdir(dir, 0755) != 0)
-            cout << "error: " << strerror(errno) << endl;
+	char dir[] = "Test";
+	for (int i = 0; i < 2; i++)
+		if (mkdir(dir, 0755) != 0)
+			cout << "error: " << strerror(errno) << endl;
 
-    // perror() 在<stdio.h>中声明，用于在控制台显示最近一次系统错误的详细信息，在实际开发中，服务程序在后台运行，通过控制台显示错误信息意义不大。（对调试程序略有帮助）
-    // void perror(const char *s);
-    char info[256];
-    if (mkdir(dir, 0755) != 0)
-    {
-        sprintf(info, "Create dir %s failed", dir);
-        perror(info);
-    }
-    cout << 1;
+	// perror() 在<stdio.h>中声明，用于在控制台显示最近一次系统错误的详细信息，在实际开发中，服务程序在后台运行，通过控制台显示错误信息意义不大。（对调试程序略有帮助）
+	// void perror(const char *s);
+	char info[256];
+	if (mkdir(dir, 0755) != 0) {
+		sprintf(info, "Create dir %s failed", dir);
+		perror(info);
+	}
+	cout << 1;
 }
 
-int main(int argc, char *argv[])
-{
-    testStrerror();
-    return 0;
+int main(int argc, char *argv[]) {
+	testStrerror();
+	return 0;
 }

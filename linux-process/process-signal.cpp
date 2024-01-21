@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include <unistd.h>
 #include <signal.h>
+#include <unistd.h>
 
 using std::cout;
 using std::endl;
@@ -25,29 +25,25 @@ using std::endl;
 // 常见的例子就是释放网络连接, 数据库链接, 保存配置文件...
 // 如果向服务程序发送0的信号，可以检测程序是否存活。
 
-void func(int signal)
-{
-    cout << "收到了信号: " << signal << endl;
+void func(int signal) {
+	cout << "收到了信号: " << signal << endl;
 }
 
-void alarm_func(int signal)
-{
-    cout << "Alarmed!" << endl;
+void alarm_func(int signal) {
+	cout << "Alarmed!" << endl;
 }
 
-int main(int argc, char *argv[])
-{
-    signal(1, func);
-    // 使用宏增强可读性
-    signal(SIGTERM, SIG_IGN);
-    signal(SIGALRM, alarm_func);
+int main(int argc, char *argv[]) {
+	signal(1, func);
+	// 使用宏增强可读性
+	signal(SIGTERM, SIG_IGN);
+	signal(SIGALRM, alarm_func);
 
-    // 5 秒后程序向自己发送alarm信号
-    alarm(5);
-    while (true)
-    {
-        cout << "执行了一次任务" << endl;
-        sleep(1);
-    }
-    return 0;
+	// 5 秒后程序向自己发送alarm信号
+	alarm(5);
+	while (true) {
+		cout << "执行了一次任务" << endl;
+		sleep(1);
+	}
+	return 0;
 }
