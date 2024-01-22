@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
 	    {2, "Hong Shen"},
 	    {3, "Shihong Wang"}};
 
-	for (size_t i = 0; i < 3; i++) {
-		buffer = to_string(people[i]);
+	for (size_t i = 0; i < 10; i++) {
+		buffer = to_string(people[i % 3]) + " " + to_string(i);
 
 		if (!client.send(buffer)) {
 			fprintf(stderr, "%s %lu %s: %s\n", "Send at", i, " times failed", strerror(errno));

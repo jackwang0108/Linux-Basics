@@ -15,14 +15,15 @@ class TcpServer {
 private:
 	int serverListenFd = -1;
 	int serverConnectFd = -1;
-	unsigned short serverPort = 0;
+	unsigned short listenPort = 0;
 	std::string clientIP = "";
 
 public:
-	TcpServer(short serverPort) : serverPort(serverPort) {
+	TcpServer() {}
+	TcpServer(short serverPort) : listenPort(serverPort) {
 	}
 
-	bool initialize(int maxMessageQueueSize) noexcept;
+	bool initialize(unsigned short listenPort, int maxMessageQueueSize) noexcept;
 
 	bool accept();
 
@@ -43,7 +44,9 @@ public:
 };
 
 
-bool TcpServer::initialize(int maxMessageQueueSize = 5) noexcept {
+bool TcpServer::initialize(unsigned short listenPort = 0, int maxMessageQueueSize = 5) noexcept {
+	if (listenPort != 0)
+		this->listenPort = listenPort;
 	// 创建socket
 	serverListenFd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (serverListenFd == -1) {
@@ -56,7 +59,7 @@ bool TcpServer::initialize(int maxMessageQueueSize = 5) noexcept {
 	std::memset(&serverSocketAddr, 0, sizeof(serverSocketAddr));
 	serverSocketAddr.sin_family = AF_INET;
 	serverSocketAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	serverSocketAddr.sin_port = htons(serverPort);
+	serverSocketAddr.sin_port = htons(this->listenPort);
 	if (bind(serverListenFd, reinterpret_cast<const sockaddr *>(&serverSocketAddr), sizeof(serverSocketAddr)) != 0) {
 		perror("Server bind IP and Port failed!");
 		::close(serverListenFd);
