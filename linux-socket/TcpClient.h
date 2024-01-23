@@ -1,5 +1,6 @@
 #pragma once
 #include <cstring>
+#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -27,6 +28,11 @@ public:
 	bool connect();
 
 	bool send(const std::string &buffer);
+
+	template<typename T>
+	bool send(const T *data, size_t size);
+
+	bool sendFile(const std::string &fileName, size_t size);
 
 	bool receive(std::string &buffer, int maxLength);
 
@@ -79,6 +85,39 @@ bool TcpClient::send(const std::string &buffer) {
 	if (clientConnectFd == -1)
 		return false;
 	return ::send(clientConnectFd, buffer.data(), buffer.size(), 0) > 0;
+}
+
+
+template<typename T>
+bool TcpClient::send(const T *data, size_t size) {
+	if (clientConnectFd == -1)
+		return false;
+	return ::send(clientConnectFd, data, size, 0) > 0;
+}
+
+
+bool TcpClient::sendFile(const std::string &fileName, size_t size) {
+	std::ifstream infile(fileName, std::ios::binary);
+	if (!infile.is_open()) {
+		std::cout << "打开文件 " << fileName << " 出错";
+		return false;
+	}
+
+	char buffer[32];
+	int onRead = 0, totalBytes = 0;
+	while (true) {
+		memset(buffer, 0, sizeof(buffer));
+		onRead = (size - totalBytes > 32) ? 32 : size - totalBytes;
+		infile.read(buffer, onRead);
+
+		if (!send(buffer, onRead))
+			return false;
+
+		totalBytes += onRead;
+		if (totalBytes == size)
+			break;
+	}
+	return true;
 }
 
 bool TcpClient::receive(std::string &buffer, int maxLength) {

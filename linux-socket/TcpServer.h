@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstring>
+#include <fstream>
 #include <string>
 
 #include <arpa/inet.h>
@@ -30,6 +31,12 @@ public:
 	bool send(const std::string &buffer);
 
 	bool recv(std::string &buffer, const size_t maxLength);
+
+	template<typename T>
+	bool recv(T *addr, size_t size);
+
+	bool recvFile(const std::string &fileName, size_t size);
+
 
 	bool closeListen();
 
@@ -96,7 +103,7 @@ bool TcpServer::send(const std::string &buffer) {
 }
 
 bool TcpServer::recv(std::string &buffer, const size_t maxLength) {
-	buffer.size();
+	buffer.clear();
 	buffer.resize(maxLength);
 	int readSize = ::recv(serverConnectFd, &buffer[0], buffer.size(), 0);
 	if (readSize <= 0) {
@@ -104,6 +111,32 @@ bool TcpServer::recv(std::string &buffer, const size_t maxLength) {
 		return false;
 	}
 	buffer.resize(readSize);
+	return true;
+}
+
+
+template<typename T>
+bool TcpServer::recv(T *addr, size_t size) {
+	return ::recv(serverConnectFd, addr, size, 0) > 0;
+}
+
+bool TcpServer::recvFile(const std::string &fileName, size_t size) {
+	std::ofstream outFile(fileName, std::ios::binary);
+
+	char buffer[32];
+	int onRead = 0, totaltBytes = 0;
+	while (true) {
+		onRead = size - totaltBytes > 32 ? 32 : size - totaltBytes;
+		if (!recv(buffer, onRead))
+			return false;
+
+		outFile.write(buffer, onRead);
+
+		totaltBytes += onRead;
+
+		if (totaltBytes == size)
+			break;
+	}
 	return true;
 }
 

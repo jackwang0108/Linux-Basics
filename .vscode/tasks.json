@@ -22,6 +22,14 @@
                 "isDefault": true
             },
             "detail": "调试器生成的任务。"
+        },
+        {
+            "type": "cmake",
+            "label": "cmake-build",
+            "command": "build",
+            "targets": [
+                "all"
+            ],
         }
     ],
     "version": "2.0.0"

@@ -21,12 +21,12 @@ int main(int argc, char *argv[]) {
 
 	short serverPort = ::atoi(argv[1]);
 	TcpServer server(serverPort);
-	if (server.initialize() == false) {
+	if (!server.initialize()) {
 		perror("Server Intialize Failed!\n");
 		return EXIT_FAILURE;
 	}
 
-	if (server.accept() == false) {
+	if (!server.accept()) {
 		perror("accept()");
 		return EXIT_FAILURE;
 	}
@@ -34,14 +34,14 @@ int main(int argc, char *argv[]) {
 
 	string buffer;
 	while (true) {
-		if (server.recv(buffer, 1024) == false) {
+		if (!server.recv(buffer, 1024)) {
 			perror("Server Receive Failed!\n");
 			break;
 		}
 		cout << "接受: " << buffer << "\n";
 
 		buffer = "ok";
-		if (server.send(buffer) == false) {
+		if (!server.send(buffer)) {
 			perror("Server Send Failed\n");
 			break;
 		}
